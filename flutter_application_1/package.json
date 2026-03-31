@@ -1,0 +1,24 @@
+{
+  "name": "car1-backend",
+  "version": "1.0.0",
+  "description": "Backend server for car1 application",
+  "main": "Backend/index.js",
+  "scripts": {
+    "start": "node Backend/index.js",
+    "dev": "node Backend/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.22.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.19.1"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

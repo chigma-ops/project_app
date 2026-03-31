@@ -8,7 +8,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -17,10 +16,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-//////////////////////////////////////////////////////////////
-// SPLASH + LOGIN PAGE
-//////////////////////////////////////////////////////////////
 
 class SplashLoginPage extends StatefulWidget {
   const SplashLoginPage({super.key});
@@ -38,6 +33,7 @@ class _SplashLoginPageState extends State<SplashLoginPage>
   late AnimationController _whiteController;
   late Animation<double> _blueFade;
   late Animation<double> _whiteDrop;
+  late Animation<double> _logo3Fade;
   late AnimationController _loginFadeController;
 
   final TextEditingController _phoneController = TextEditingController();
@@ -62,11 +58,18 @@ class _SplashLoginPageState extends State<SplashLoginPage>
       curve: Curves.easeIn,
     );
 
+    // logo2 drops from above
     _whiteDrop = Tween<double>(begin: -200, end: 0).animate(
       CurvedAnimation(
         parent: _whiteController,
         curve: Curves.easeOutCubic,
       ),
+    );
+
+    // logo3 fades in at the same time as logo2 (same whiteController)
+    _logo3Fade = CurvedAnimation(
+      parent: _whiteController,
+      curve: Curves.easeIn,
     );
 
     _loginFadeController = AnimationController(
@@ -119,33 +122,40 @@ class _SplashLoginPageState extends State<SplashLoginPage>
       body: SafeArea(
         child: Stack(
           children: [
-
-            /// LOGO
             Positioned(
               top: 30,
               left: 24,
               right: 24,
-              child: Stack(
-                alignment: Alignment.center,
+              child: Column(
                 children: [
-                  FadeTransition(
-                    opacity: _blueFade,
-                    child: Image.asset("assets/images/logo1.png", width: 150),
+                  // logo1 fades in (blue), logo2 drops in (white) — same as before
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      FadeTransition(
+                        opacity: _blueFade,
+                        child: Image.asset("assets/images/logo1.png", width: 150),
+                      ),
+                      AnimatedBuilder(
+                        animation: _whiteController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, _whiteDrop.value),
+                            child: Image.asset("assets/images/logo2.png", width: 150),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  AnimatedBuilder(
-                    animation: _whiteController,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, _whiteDrop.value),
-                        child: Image.asset("assets/images/logo2.png", width: 150),
-                      );
-                    },
+                  const SizedBox(height: 12),
+                  // logo3 fades in at the same time as logo2, no drop
+                  FadeTransition(
+                    opacity: _logo3Fade,
+                    child: Image.asset("assets/images/logo3.png", width: 150),
                   ),
                 ],
               ),
             ),
-
-            /// LOGIN FORM
             if (showLogin)
               FadeTransition(
                 opacity: _loginFadeController,
@@ -154,8 +164,6 @@ class _SplashLoginPageState extends State<SplashLoginPage>
                   child: Column(
                     children: [
                       const SizedBox(height: 600),
-
-                      /// Phone number field
                       TextField(
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
@@ -187,7 +195,7 @@ class _SplashLoginPageState extends State<SplashLoginPage>
                           ),
                           onPressed: _onNext,
                           child: const Text(
-                            "Нэвтрэх",
+                            "Үргэлжлүүлэх",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

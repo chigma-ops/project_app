@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'otp.dart';
 
 class PasswordPage extends StatefulWidget {
   final String phoneNumber;
@@ -13,14 +14,28 @@ class _PasswordPageState extends State<PasswordPage> {
   bool _obscure = true;
   String? _errorText;
 
+  // ── Default correct password ──────────────────────────────────────────────
+  static const String _correctPassword = '0521';
+
   void _onLogin() {
     final password = _passwordController.text.trim();
     if (password.isEmpty) {
       setState(() => _errorText = "Нууц үгээ оруулна уу");
       return;
     }
+    if (password != _correctPassword) {
+      setState(() => _errorText = "Нууц үг буруу байна");
+      return;
+    }
     setState(() => _errorText = null);
-    // TODO: handle actual login logic here
+
+    // Navigate to OTP page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OtpPage(phoneNumber: widget.phoneNumber),
+      ),
+    );
   }
 
   @override
@@ -37,7 +52,6 @@ class _PasswordPageState extends State<PasswordPage> {
       body: SafeArea(
         child: Column(
           children: [
-
             /// LOGO at top
             Padding(
               padding: const EdgeInsets.only(top: 30),
@@ -49,8 +63,16 @@ class _PasswordPageState extends State<PasswordPage> {
                 ],
               ),
             ),
+            Padding(padding: 
+            const EdgeInsets.only(top: 1),
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Image.asset("assets/images/logo3.png", height: 120,)
+              ],
+            ),
+            ),
 
-            /// Pushes form to the bottom
             const Spacer(),
 
             /// FORM at bottom
@@ -60,14 +82,10 @@ class _PasswordPageState extends State<PasswordPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   /// Phone number subtitle
                   Text(
                     widget.phoneNumber,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                    ),
+                    style: const TextStyle(fontSize: 14, color: Colors.black54),
                   ),
 
                   const SizedBox(height: 10),
